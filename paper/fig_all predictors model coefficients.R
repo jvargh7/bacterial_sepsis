@@ -90,4 +90,6 @@ library(ggpubr)
 
 ggarrange(estimate_A,
           vif_B,
-          ncol=2,nrow=1,labels=c("A","B"))
+          ncol=2,nrow=1,labels=c("A","B")) %>% 
+  ggsave(.,filename=paste0(path_bs_folder,"/figures/all predictors model coefficients.png"))
+

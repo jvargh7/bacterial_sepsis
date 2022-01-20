@@ -35,6 +35,8 @@ roc_A <-
   theme_bw() +
   geom_point(y = Sensitivity,x=(1-Specificity),shape=15)
 
+ggsave(roc_A,filename = paste0(path_bs_folder,"/figures/ROC curve.png"),width = 4,height =4)
+
 density_B <- ggplot(data=ngal_clean,
        aes(x=ngal,fill=sepsis_2cat)) +
   geom_density(alpha=0.4) +

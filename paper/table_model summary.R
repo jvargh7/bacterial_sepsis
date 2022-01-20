@@ -1,7 +1,7 @@
-rf_res <- readRDS(paste0(path_bs_folder,"/working/rf_res_sens.RDS"))
-glmnet_rs <- readRDS(paste0(path_bs_folder,"/working/glmnet_rs_sens.RDS"))
-last_rf_fit <- readRDS(paste0(path_bs_folder,"/working/last_rf_fit_sens.RDS"))
-last_glmnet_fit <- readRDS(paste0(path_bs_folder,"/working/last_glmnet_fit_sens.RDS"))
+rf_res <- readRDS(paste0(path_bs_folder,"/working/rf_res_filt.RDS"))
+glmnet_rs <- readRDS(paste0(path_bs_folder,"/working/glmnet_rs_filt.RDS"))
+last_rf_fit <- readRDS(paste0(path_bs_folder,"/working/last_rf_fit_filt.RDS"))
+last_glmnet_fit <- readRDS(paste0(path_bs_folder,"/working/last_glmnet_fit_filt.RDS"))
 
 
 library(caret)
@@ -26,7 +26,7 @@ lr_best <-
                 mixture == 0) # alpha = 0.1 and mixture = 0
 
 
-stab3_train <- bind_rows(rf_res %>% 
+stab4_train <- bind_rows(rf_res %>% 
                           collect_metrics() %>% 
                           dplyr::filter(mtry == rf_best$mtry,
                                         trees == rf_best$trees,
@@ -52,7 +52,7 @@ stab3_train <- bind_rows(rf_res %>%
   dplyr::select(parameters,model,data,.metric,mean_ci)
 
 
-stab3_test <- bind_rows(last_glmnet_fit %>% 
+stab4_test <- bind_rows(last_glmnet_fit %>% 
                          collect_metrics() %>% 
                          mutate(model = "Elastic net",
                                 data = "Test"),
@@ -63,10 +63,10 @@ stab3_test <- bind_rows(last_glmnet_fit %>%
 ) %>% 
   mutate(mean_ci = round(.estimate,2) %>% as.character(.))
 
-stab3_df <- bind_rows(stab3_train,
-                     stab3_test) %>% 
+stab4_df <- bind_rows(stab4_train,
+                      stab4_test) %>% 
   dplyr::select(model,data,.metric,mean_ci)  %>% 
   pivot_wider(names_from=c(.metric,data),values_from=mean_ci)
 
-stab3_df %>% 
-  write.csv(.,paste0(path_bs_folder,"/working/supplementary table 3.csv"),row.names = FALSE)
+stab4_df %>% 
+  write.csv(.,paste0(path_bs_folder,"/working/supplementary table 4.csv"),row.names = FALSE)

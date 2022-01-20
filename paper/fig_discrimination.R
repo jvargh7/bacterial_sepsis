@@ -1,16 +1,16 @@
 
 # Box plot of predictions ---------
 
-rf_res <- readRDS(paste0(path_bs_folder,"/working/rf_res.RDS"))
-glmnet_rs <- readRDS(paste0(path_bs_folder,"/working/glmnet_rs.RDS"))
-last_rf_fit <- readRDS(paste0(path_bs_folder,"/working/last_rf_fit.RDS"))
-last_glmnet_fit <- readRDS(paste0(path_bs_folder,"/working/last_glmnet_fit.RDS"))
+rf_res <- readRDS(paste0(path_bs_folder,"/working/rf_res_filt.RDS"))
+glmnet_rs <- readRDS(paste0(path_bs_folder,"/working/glmnet_rs_filt.RDS"))
+last_rf_fit <- readRDS(paste0(path_bs_folder,"/working/last_rf_fit_filt.RDS"))
+last_glmnet_fit <- readRDS(paste0(path_bs_folder,"/working/last_glmnet_fit_filt.RDS"))
 
 
 boxplot_A <- bind_rows(last_glmnet_fit$.predictions[[1]] %>%
-                     mutate(model = "GLMNET"),
-                   last_rf_fit$.predictions[[1]] %>%
-                     mutate(model = "Random Forest")) %>% 
+                         mutate(model = "GLMNET"),
+                       last_rf_fit$.predictions[[1]] %>%
+                         mutate(model = "Random Forest")) %>% 
   ggplot(data=.,aes(fill=sepsis_2cat,y=.pred_Positive,x=model)) +
   geom_boxplot(position = "dodge") +
   xlab("") +
@@ -41,4 +41,5 @@ dotplot_B <- bind_rows(last_glmnet_fit$.predictions[[1]] %>%
 library(ggpubr)
 
 ggarrange(boxplot_A,
-          dotplot_B,ncol = 2,nrow=1,labels = c("A","B"))
+          dotplot_B,ncol = 2,nrow=1,labels = c("A","B")) %>% 
+  ggsave(.,filename = paste0(path_bs_folder,"/figures/discrimination.png"),width = 8,height=5)
